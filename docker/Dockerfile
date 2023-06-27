@@ -5,10 +5,10 @@ USER root
 RUN apt-get update && \
     apt-get install -y libcap-dev supervisor && \
     apt-get install -y rdc && \
-    apt-get install -y prometheus && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
-    pip3 install prometheus_client
+    pip3 install prometheus_client && \
+    ldconfig /opt/rocm/rdc/lib
 
 ## copy needed files
 COPY ../python_binding /rdc/python_binding
