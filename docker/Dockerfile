@@ -2,10 +2,8 @@ FROM rocm/rocm-terminal:5.5
 USER root
 
 ## requriements inatallation 
-RUN apt-get update && apt-get install -y automake \
-    make g++ unzip build-essential autoconf \
-    libtool pkg-config libgflags-dev libgtest-dev\
-    clang libc++-dev curl libcap-dev supervisor && \
+RUN apt-get update && \
+    apt-get install -y libcap-dev supervisor && \
     apt-get install -y rdc && \
     apt-get install -y prometheus && \
     apt-get clean && \
