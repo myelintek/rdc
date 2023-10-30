@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: amdgpu-rdc-exporter
+  namespace: amdgpu
+  labels:
+    app: amdgpu-rdc-exporter
+spec:
+  selector:
+    matchLabels:
+      app: amdgpu-rdc-exporter
+  template:
+    metadata:
+      labels:
+        app: amdgpu-rdc-exporter
+    spec:
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      priorityClassName: system-node-critical
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists
+      containers:
+      - image: cr.myelintek.com/rocm/rocm_rdc:latest
+        name: amdgpu-rdc-exporter
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          privileged: true
+        ports:
+          - containerPort: 5000
+            name: "metrics"
+        volumeMounts:
+          - name: dri
+            mountPath: /dev/dri
+      volumes:
+        - name: dri
+          hostPath:
+            path: /dev/dri
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: amdgpu
+  name: amdgpu-rdc-exporter
+  labels:
+    app: amdgpu-rdc-exporter
+  annotations:
+    prometheus.io/scrape: "true"
+spec:
+  selector:
+    app: amdgpu-rdc-exporter
+  ports:
+  - name: gpu-metrics
+    port: 5000
+    targetPort: 5000
+    protocol: TCP
+---
+# apiVersion: monitoring.coreos.com/v1
+# kind: ServiceMonitor
+# metadata:
+#   name: amdgpu-rdc-exporter
+#   namespace: amdgpu
+#   labels:
+#     app: amdgpu-rdc-exporter
+# spec:
+#   endpoints:
+#   - port: gpu-metrics
+#     path: "/metrics"
+#   jobLabel: app
+#   namespaceSelector:
+#     matchNames:
+#     - amdgpu
+#   selector:
+#     matchLabels:
+#      app: amdgpu-rdc-exporter
+
