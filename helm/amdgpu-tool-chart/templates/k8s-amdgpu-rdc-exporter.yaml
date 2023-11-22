@@ -55,22 +55,22 @@ spec:
     targetPort: 5000
     protocol: TCP
 ---
-# apiVersion: monitoring.coreos.com/v1
-# kind: ServiceMonitor
-# metadata:
-#   name: amdgpu-rdc-exporter
-#   namespace: amdgpu
-#   labels:
-#     app: amdgpu-rdc-exporter
-# spec:
-#   endpoints:
-#   - port: gpu-metrics
-#     path: "/metrics"
-#   jobLabel: app
-#   namespaceSelector:
-#     matchNames:
-#     - amdgpu
-#   selector:
-#     matchLabels:
-#      app: amdgpu-rdc-exporter
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: amdgpu-rdc-exporter
+  namespace: amdgpu
+  labels:
+    app: amdgpu-rdc-exporter
+spec:
+  endpoints:
+  - port: gpu-metrics
+    path: "/metrics"
+  jobLabel: app
+  namespaceSelector:
+    matchNames:
+    - amdgpu
+  selector:
+    matchLabels:
+     app: amdgpu-rdc-exporter
 
